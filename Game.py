@@ -1,4 +1,5 @@
 
+
 import pygame
 import random
 import time
@@ -10,7 +11,7 @@ pygame.init()
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 
-# asignar nombre a la ventana
+# Asignar nombre a la ventana
 pygame.display.set_caption("Juego de Memoria")
 
 # Definir el color de la letra en la pantalla
@@ -80,11 +81,11 @@ def get_elapsed_time():
 def draw_screen():
     # Asignar color a la pantalla, en este caso el color gris claro
     screen.fill((192, 192, 192))
-    #recorer los indices y las posiciones de las cartas
+    # Recorrer los indices y las posiciones de las cartas
     for i, pos in enumerate(card_positions):
         x, y = pos
         index = cards[i]
-        #verificar el estadod e la carta y si esta boca abajo(0), se muestra la parte de atras de la carta
+        # Verificar el estado de la carta y si está boca abajo(0), se muestra la parte de atrás de la carta
         if card_state[i] == 0:
             # Dibujar la parte trasera de la carta
             pygame.draw.rect(screen, (0, 0, 255), (x, y, card_width, card_height))
@@ -114,10 +115,10 @@ def draw_screen():
     error_text = "Errores: {}".format(num_errors)
     time_render = font.render(time_text, True, BLUE)
     error_render = font.render(error_text, True, BLUE)
-    #Dar ubicación al texto en la pantalla
+    # Dar ubicación al texto en la pantalla
     screen.blit(time_render, (600, 20))
     screen.blit(error_render, (600, 50))
-    #actualizar pantalla
+    # Actualizar pantalla
     pygame.display.flip()
 
 # Voltear las cartas seleccionadas
@@ -135,68 +136,107 @@ def flip_cards():
             return True
     return False
 
+# Mostrar menú de inicio
+def show_menu():
+    while True:
+        for event in pygame.event.get():
+            # Verificar si se ha hecho clic en el botón de cerrar la ventana
+            if event.type == pygame.QUIT:
+                # Cerrar Pygame y salir del programa
+                pygame.quit()
+                return
 
+            # Verificar eventos de teclado
+            elif event.type == pygame.KEYDOWN:
+                # Si la tecla es enter, inicia el juego
+                if event.key == pygame.K_RETURN:
+                    return True
+                # Si la tecla es esc, sale del programa
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    return
 
-#variables de control 
+        # Asignar color a la pantalla, en este caso el color gris claro
+        screen.fill((192, 192, 192))
+        # Fuente para mostrar el texto del menú
+        font = pygame.font.Font(None, 36)
+        # Crear los objetos de texto para el menú
+        menu_text1 = font.render("Juego de Memoria", True, BLUE)
+        menu_text2 = font.render("Presione Enter para iniciar", True, BLUE)
+        menu_text3 = font.render("Presione Esc para salir", True, BLUE)
+        # Dar ubicación al texto en la pantalla
+        screen.blit(menu_text1, (width // 2 - menu_text1.get_width() // 2, height // 2 - 50))
+        screen.blit(menu_text2, (width // 2 - menu_text2.get_width() // 2, height // 2))
+        screen.blit(menu_text3, (width // 2 - menu_text3.get_width() // 2, height // 2 + 50))
+        # Actualizar pantalla
+        pygame.display.flip()
+
+# Variables de control
 running = True
 num_errors = 0
 game_started = False
+
+# Mostrar menú de inicio
+show_menu()
+
 # Bucle principal del juego
 while running:
-    #recorrer todos los eventos que encuentre en cada parte del bucle
+    # Recorrer todos los eventos que encuentre en cada parte del bucle
     for event in pygame.event.get():
-        #si el tipo de evento es QUIT, sale del bucle y cierra la ventana
+        # Si el tipo de evento es QUIT, sale del bucle y cierra la ventana
         if event.type == pygame.QUIT:
             running = False
-        #verificar si oprime un tecla
+        # Verificar si se ha oprimido una tecla
         elif event.type == pygame.KEYDOWN:
-            #si la tecla es enter
+            # Si la tecla es enter
             if event.key == pygame.K_RETURN:
-                #si el juego no ha iniciado, lo inicia
+                # Si el juego no ha iniciado, lo inicia
                 if not game_started:
                     game_started = True
-                    #registrar el tiempo de inicio del juego
+                    # Registrar el tiempo de inicio del juego
                     start_time = time.time()
-        #verifica los clic con el mouse
+        # Verificar los clics con el mouse
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            #si el juego ya inició
+            # Si el juego ya ha iniciado
             if game_started:
-                #valida la posición del clic del mouse
+                # Validar la posición del clic del mouse
                 pos = pygame.mouse.get_pos()
-                #recorrer las posiciones de las cartas
+                # Recorrer las posiciones de las cartas
                 for i, card_pos in enumerate(card_positions):
                     x, y = card_pos
-                    #verificar si la posición del clic está dentro de una carta
+                    # Verificar si la posición del clic está dentro de una carta
                     if x <= pos[0] <= x + card_width and y <= pos[1] <= y + card_height:
-                        #Validar si la carta está oculta(0)
+                        # Validar si la carta está oculta (0)
                         if card_state[i] == 0:
-                            #cambiar de estado y agregarlo a la lista de cartas seleccionadas
+                            # Cambiar de estado y agregarlo a la lista de cartas seleccionadas
                             card_state[i] = 1
                             selected_cards.append(i)
-                            #validar si se han sellecionado dos cartas 
+                            # Validar si se han seleccionado dos cartas
                             if len(selected_cards) == 2:
-                                #verificar si las dos cartas coinciden
+                                # Verificar si las dos cartas coinciden
                                 if cards[selected_cards[0]] == cards[selected_cards[1]]:
-                                    #incrementar el contador de coincidencias
+                                    # Incrementar el contador de coincidencias
                                     num_matches += 1
-                                    #limpiar lista de cartas seleccionadas
+                                    # Limpiar lista de cartas seleccionadas
                                     selected_cards.clear()
                                 else:
-                                    #esperar un segundo para voltear las cartas seleccionadas
+                                    # Esperar un segundo para voltear las cartas seleccionadas
                                     pygame.time.wait(1000)
                                     card_state[selected_cards[0]] = 0
                                     card_state[selected_cards[1]] = 0
-                                    ##limpiar lista de cartas seleccionadas
+                                    # Limpiar lista de cartas seleccionadas
                                     selected_cards.clear()
-                                    #incrementar el contador de errores
+                                    # Incrementar el contador de errores
                                     num_errors += 1
                             break
-    #Verificar si se han encontrado todas las parejas
+
+    # Verificar si se han encontrado todas las parejas
     if num_matches == len(cards) // 2:
-        #registrar el tiempo y salir del bucle
+        # Registrar el tiempo y salir del bucle
         end_time = time.time()
         running = False
-    #mostrar la pantalla del juego
+
+    # Mostrar la pantalla del juego
     draw_screen()
     pygame.time.wait(1000)
 
@@ -205,23 +245,23 @@ while True:
     for event in pygame.event.get():
         # Verifica si se ha hecho clic en el botón de cerrar la ventana
         if event.type == pygame.QUIT:
-            # Cerrar Pygame y sale del programa
+            # Cerrar Pygame y salir del programa
             pygame.quit()
-            
+            sys.exit()
 
-    # # Asignar color a la pantalla, en este caso el color gris claro
+    # Asignar color a la pantalla, en este caso el color gris claro
     screen.fill((192, 192, 192))
-    #fuente para mostrar el texto de los resultados
+    # Fuente para mostrar el texto de los resultados
     font = pygame.font.Font(None, 36)
     # Crear los objetos de texto para los resultados
-    result_text1 = font.render("¡Felicidades, has ganado!", True, BLUE)
-    result_text2 = font.render("Tiempo transcurrido: {:.2f} segundos".format(get_elapsed_time()), True, BLUE)
-    result_text3 = font.render("Número de errores: {}".format(num_errors), True, BLUE)
-    #Dar ubicación al texto en la pantalla
-    screen.blit(result_text1, (width // 2 - result_text1.get_width() // 2, height // 2 - 50))
-    screen.blit(result_text2, (width // 2 - result_text2.get_width() // 2, height // 2))
-    screen.blit(result_text3, (width // 2 - result_text3.get_width() // 2, height // 2 + 50))
-    #Actualizar pantalla
+    result_text1 = font.render("¡Felicitaciones!", True, BLUE)
+    result_text2 = font.render("Has encontrado todas las parejas", True, BLUE)
+    result_text3 = font.render("Tiempo: {:.2f} segundos".format(end_time - start_time), True, BLUE)
+    result_text4 = font.render("Errores: {}".format(num_errors), True, BLUE)
+    # Dar ubicación al texto en la pantalla
+    screen.blit(result_text1, (width // 2 - result_text1.get_width() // 2, height // 2 - 100))
+    screen.blit(result_text2, (width // 2 - result_text2.get_width() // 2, height // 2 - 50))
+    screen.blit(result_text3, (width // 2 - result_text3.get_width() // 2, height // 2))
+    screen.blit(result_text4, (width // 2 - result_text4.get_width() // 2, height // 2 + 50))
+    # Actualizar pantalla
     pygame.display.flip()
-
-
