@@ -1,3 +1,7 @@
+
+NOTA: Antes de correr el código, asegúrese de tener instalado Python en su equipo y la librería PyGame.
+Para instalar la libreria, abra un comando del sistema: CMD y digite el comando -pip install pygame
+
 -El juego es un juego de memoria en el que el objetivo es encontrar todas las parejas de cartas idénticas. El juego presenta una cuadrícula de cartas boca abajo y el jugador debe voltearlas de a pares, tratando de recordar la ubicación de cada carta para encontrar sus parejas correspondientes.
 
 -Al inicio del juego, se generan cartas aleatorias y se distribuyen en la cuadrícula. Cada carta tiene una imagen asociada. El número de filas y columnas en la cuadrícula puede ser configurado.
